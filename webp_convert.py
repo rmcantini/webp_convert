@@ -23,9 +23,9 @@ def main():
     list_files = os.listdir(path_main)
 
     for files in list_files:
-
+        each_file = os.path.join(path_main, files)
         if not files.startswith(".") and files.endswith("png"):
-            each_file = os.path.join(path_main, files)
+
             img = Image.open(each_file)
             img.save(each_file.replace("png", "webp"))
 
@@ -42,7 +42,7 @@ def main():
         else:
             os.remove(os.path.join(each_file))
 
-    tk.messagebox.showinfo("info", "Sucesso total")
+    tk.messagebox.showinfo("info", "Sucesso total, arrazou!")
 
 
 if __name__ == "__main__":
