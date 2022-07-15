@@ -1,6 +1,7 @@
 """ python script to convert all files in folder to webp"""
 import os
 import tkinter as tk
+import time
 from tkinter.filedialog import askdirectory
 from PIL import Image
 
@@ -30,6 +31,7 @@ def main():
             img.save(each_file.replace("png", "webp"))
 
             print(f"{each_file} compressed successfully")
+            time.sleep(2)  # seconds
 
         # cleanup the png's
         if (
@@ -41,6 +43,7 @@ def main():
             pass
         else:
             os.remove(os.path.join(each_file))
+            time.sleep(2)  # seconds
 
     tk.messagebox.showinfo("info", "Sucesso total, arrazou!")
 
