@@ -9,8 +9,7 @@ root = tk.Tk()
 root.withdraw()
 
 # intro explanation pop-up
-tk.messagebox.showinfo(
-    "info", "Selecione a pasta com os arquivos para conversão.")
+tk.messagebox.showinfo("info", "Selecione a pasta com os arquivos para conversão.")
 
 # asks what directory to work with (input)
 path_main = askdirectory(
