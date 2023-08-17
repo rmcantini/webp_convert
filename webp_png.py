@@ -22,21 +22,22 @@ path_main = askdirectory(
 
 
 def main():
-    """ function to convert all files in folder to webp"""
-    final_path = path_main
+    """Function to convert all files in folder to PNG"""
+    final_path = path_main  # Make sure 'path_main' is defined
 
     try:
         for image_path in os.listdir(final_path):
             input_path = os.path.join(final_path, image_path)
+            output_path = os.path.splitext(input_path)[0] + ".png"
 
             img = Image.open(input_path)
-            img.save(input_path, format="WebP", lossless=True)
-            print(f'{input_path} compressed successfully')
+            img.save(output_path, format="PNG", lossless=True)
+            print(f'{input_path} converted successfully')
 
-        tk.messagebox.showinfo('info', 'Sucesso total')
+        tk.messagebox.showinfo('Info', 'Conversion successful')
 
     except OSError:
-        tk.messagebox.showinfo('info', 'File type is not supported')
+        tk.messagebox.showinfo('Error', 'File type is not supported')
 
 
 if __name__ == '__main__':
