@@ -5,6 +5,7 @@ import os
 import tkinter as tk
 from tkinter.filedialog import askdirectory
 from PIL import Image
+# import Image
 
 
 # hide root window
