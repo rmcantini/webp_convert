@@ -4,7 +4,7 @@ python script to automate conversion of files to webp format
 import os
 import tkinter as tk
 from tkinter.filedialog import askdirectory
-from PIL import Image
+from Pillow import Image
 # import Image
 
 
