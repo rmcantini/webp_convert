@@ -6,5 +6,6 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pillow>=10.4.0",
+    "ruff>=0.6.4",
     "tk>=0.1.0",
 ]
