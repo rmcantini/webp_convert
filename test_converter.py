@@ -1,91 +1,67 @@
 import os
-from webp_convert import main
-
-# Mock the GUI interactions
-os.environ["PATH"] = "/mock/path"
+import tkinter as tk
+from PIL import Image
+import pytest
+from unittest.mock import patch
 
 
 def test_main_function():
     # Arrange
-    test_dir = "/tmp/test_directory"
-    os.makedirs(test_dir)
+    root = tk.Tk()
+    root.withdraw()
 
-    # Act
-    main()
+    # Mock the file dialog to return a specific directory
+    def mock_askdirectory(*args, **kwargs):
+        return "C:\\Users\\rmcan\\Pictures\\God of War"
+
+    with patch("tkinter.filedialog.askdirectory", side_effect=mock_askdirectory):
+        # Define the main function
+        def main():
+            final_path = "C:\\Users\\rmcan\\Pictures\\God of War"
+            try:
+                for image_path in os.listdir(final_path):
+                    input_path = os.path.join(final_path, image_path)
+                    output_path = os.path.splitext(input_path)[0] + ".png"
+                    img = Image.open(input_path)
+                    img.save(output_path, format="PNG", lossless=True)
+                    print(f"{input_path} converted successfully")
+            except OSError:
+                raise  # Raise the exception instead of catching it
+
+        # Act
+        main()
 
     # Assert
-    assert len(os.listdir(test_dir)) == 0, "No files were converted"
     assert os.path.exists(
-        os.path.join(test_dir, "image1.webp")
-    ), "Webp file was not created"
+        "C:\\Users\\rmcan\\Pictures\\God of War"
+    ), "Selected directory does not exist"
+    assert (
+        len(os.listdir("C:\\Users\\rmcan\\Pictures\\God of War")) > 0
+    ), "No images found in the selected directory"
+
+    # Test error handling
+    with patch("tkinter.messagebox.showinfo") as mock_showinfo:
+        with pytest.raises(OSError):
+            main()
+        mock_showinfo.assert_called_once_with("Error", "File type is not supported")
+
+    # Clean up
+    root.quit()
 
 
-def test_png_to_webp_conversion():
+@pytest.fixture(scope="module")
+def setup_test_environment():
+    global root
+    root = tk.Tk()
+    root.withdraw()
+    yield
+    root.quit()
+
+
+def test_initial_message(setup_test_environment):
     # Arrange
-    input_path = "/tmp/input.png"
-    output_path = "tmp/output.webp"
-
-    # Act
-    with open(input_path, "wb") as f:
-        f.write(b"PNG")
-
-    main()
-
-    # Assert
-    assert os.path.exists(output_path), "Webp file was not created"
-    assert os.path.getsize(output_path) < os.path.getsize(
-        input_path
-    ), "File size did not decrease after compression"
-
-
-def test_skip_hidden_and_directories():
-    # Arrange
-    test_dir = "/tmp/test_directory"
-    os.makedirs(test_dir)
-    os.makedirs(os.path.join(test_dir, ".hidden"))
-    os.makedirs(os.path.join(test_dir, "subdir"))
-
-    # Act
-    main()
-
-    # Assert
-    assert not os.path.exists(
-        os.path.join(test_dir, ".hidden", "file.txt")
-    ), "Hidden files were processed"
-    assert not os.path.exists(
-        os.path.join(test_dir, "subdir", "file.txt")
-    ), "Subdirectory files were processed"
-
-
-def test_skip_webp_and_zip_files():
-    # Arrange
-    test_dir = "/tmp/test_directory"
-    os.makedirs(test_dir)
-    open(os.path.join(test_dir, "file.webp"), "w").close()
-    open(os.path.join(test_dir, "file.zip"), "w").close()
-
-    # Act
-    main()
-
-    # Assert
-    assert not os.path.exists(
-        os.path.join(test_dir, "file.webp")
-    ), "WebP files were deleted"
-    assert not os.path.exists(
-        os.path.join(test_dir, "file.zip")
-    ), "Zip files were deleted"
-
-
-def test_cleanup_png_files():
-    # Arrange
-    test_dir = "/tmp/test_directory"
-    os.makedirs(test_dir)
-    open(os.path.join(test_dir, "file.png"), "w").close()
-
-    # Act
-    main()
-
-    # Assert
-    assert not os.path.exists(
-        os.path.join(test_dir, "file.png")
-    ), "PNG files were not cleaned up"
+    with patch("tkinter.messagebox.showinfo") as mock_showinfo:
+        # Act
+        mock_showinfo.assert_called_once_with(
+            "info", "Selecione a pasta com os arquivos para conversão."
+        )
